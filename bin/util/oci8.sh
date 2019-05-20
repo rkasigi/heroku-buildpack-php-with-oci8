@@ -12,8 +12,9 @@ install_oci8_ext() {
 		# sh -c "echo '/app/.heroku/php/lib/instantclient_11_2' > /etc/ld.so.conf.d/oracle-instantclient.conf"
 		# ldconfig
 
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2
-		echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2" >> /app/.profile.d/00-global-env.sh
+        if [ -z ${LD_LIBRARY_PATH+x} ]; then export LD_LIBRARY_PATH=/app/.heroku/php/lib/instantclient_11_2; else export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2; fi
+
+		echo "if [ -z ${LD_LIBRARY_PATH+x} ]; then export LD_LIBRARY_PATH=/app/.heroku/php/lib/instantclient_11_2; else export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2; fi" >> /app/.profile.d/00-global-env.sh
 	fi
 
 	status $engine
