@@ -6,19 +6,13 @@ install_oci8_ext() {
 
     status "start process install_oci8_ext"
 
-	if composer show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/php 2>/dev/null; then
-    	engineoci="php"
-    else
-        engineoci="unknown"
-    fi
-
-	if [[ "$engineoci" == "php" ]] && ! $engineoci -n $(which composer) show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/ext-oci8 2>/dev/null; then
+	if [[ "$engine" == "php" ]] && ! $engine -n $(which composer) show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/ext-oci8 2>/dev/null; then
 	    status "installing instaclient"
 		echo /app/.heroku/php/lib/instantclient_11_2 > /etc/ld.so.conf.d/oracle-instantclient.conf
 		ldconfig
 	fi
 
-	status $engineoci
+	status $engine
 	status "done process install_oci8_ext"
 
 }

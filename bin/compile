@@ -380,7 +380,6 @@ export HEROKU_PHP_DEFAULT_RUNTIME_VERSION
 	fi
 }
 
-install_oci8_ext
 
 # reset COMPOSER for the platform install step
 COMPOSER_bak="$COMPOSER"
@@ -481,6 +480,8 @@ elif composer show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/hh
 	engine="hhvm"
 	engine_r="hhvm --php -r"
 fi
+
+install_oci8_ext
 
 # log number of installed platform packages
 mmeasure "platform.count" $(composer show -d "$build_dir/.heroku/php" --installed "heroku-sys/*" 2> /dev/null | wc -l)
