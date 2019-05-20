@@ -5,7 +5,7 @@ install_oci8_ext() {
 	# otherwise users would have to have it in their require section, which is annoying in development environments
 
     status "start process install_oci8_ext"
-    status whoami
+    status `whoami`
 
 	if [[ "$engine" == "php" ]] && ! $engine -n $(which composer) show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/ext-oci8 2>/dev/null; then
 	    status "installing instaclient"
