@@ -9,8 +9,11 @@ install_oci8_ext() {
 
 	if [[ "$engine" == "php" ]] && ! $engine -n $(which composer) show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/ext-oci8 2>/dev/null; then
 	    status "installing instaclient"
-		sh -c "echo '/app/.heroku/php/lib/instantclient_11_2' > /etc/ld.so.conf.d/oracle-instantclient.conf"
-		ldconfig
+		# sh -c "echo '/app/.heroku/php/lib/instantclient_11_2' > /etc/ld.so.conf.d/oracle-instantclient.conf"
+		# ldconfig
+
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2
+		echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/.heroku/php/lib/instantclient_11_2" >> /app/.profile.d/00-global-env.sh
 	fi
 
 	status $engine
