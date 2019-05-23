@@ -203,11 +203,11 @@ status "Bootstrapping..."
 
 s3_url="https://lang-php.s3.amazonaws.com/dist-${STACK}-stable/"
 rkasigi_repository_url="https://raw.githubusercontent.com/rkasigi/heroku-buildpack-php-repository/master/dist-${STACK}-stable/packages.json"
+if [ -z ${RKASIGI_PHP_PLATFORM_REPOSITORIES$+x} ]; then RKASIGI_PHP_PLATFORM_REPOSITORIES$=${the_url}; fi
 # prepend the default repo to the list configured by the user
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
-export_env_dir "$env_dir" '^RKASIGI_PHP_PLATFORM_REPOSITORIES$'
-HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${RKASIGI_PHP_PLATFORM_REPOSITORIES$:rkasigi_repository_url} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
+HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${RKASIGI_PHP_PLATFORM_REPOSITORIES$} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
 if [[ "${HEROKU_PHP_PLATFORM_REPOSITORIES}" == *" - "* ]]; then
 	# a single "-" in the user supplied string removes everything to the left of it; can be used to delete the default repo
 	notice_inline "Default platform repository disabled."
