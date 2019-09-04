@@ -144,6 +144,10 @@ class ComposerInstallerPlugin implements PluginInterface, EventSubscriberInterfa
                 // just enable that ext (arg is true, or the .so filename)
                 file_put_contents(sprintf($ini, "ext-$extName"), sprintf("extension=%s\n", $config === true ? "$extName.so" : $config));
 
+            } else {
+
+                file_put_contents(sprintf($ini, "ext-$extName"), "");
+
             }
 
 		} elseif(is_string($config) && is_readable($config)) {
