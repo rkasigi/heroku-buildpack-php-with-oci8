@@ -138,18 +138,8 @@ class ComposerInstallerPlugin implements PluginInterface, EventSubscriberInterfa
 		@mkdir(dirname($ini), 0777, true);
 		
 		if($config === true || (is_string($config) && substr($config, -3) === '.so' && is_readable($config))) {
-
-            //If extention is ioncube, do not create config file
-            if($extName !== "ioncube") {
-                // just enable that ext (arg is true, or the .so filename)
-                file_put_contents(sprintf($ini, "ext-$extName"), sprintf("extension=%s\n", $config === true ? "$extName.so" : $config));
-
-            } else {
-
-                file_put_contents(sprintf($ini, "ext-$extName"), "");
-
-            }
-
+			// just enable that ext (arg is true, or the .so filename)
+			file_put_contents(sprintf($ini, "ext-$extName"), sprintf("extension=%s\n", $config === true ? "$extName.so" : $config));
 		} elseif(is_string($config) && is_readable($config)) {
 			// ini file, maybe with special contents like extra config or different .so name (think "zend-opcache" vs "opcache.so")
 			// FIXME: consider ignoring/overriding the numeric prefix and re-using the original file name for "replace"d extensions, which may deliberately be different to ensure a certain loading order?

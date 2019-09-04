@@ -47,6 +47,7 @@ source $bp_dir/bin/util/failures.sh
 source $bp_dir/bin/util/newrelic.sh
 source $bp_dir/bin/util/blackfire.sh
 source $bp_dir/bin/util/oci8.sh
+source $bp_dir/bin/util/ioncube.sh
 
 # if this is set it prevents Git clones (e.g. for Composer installs from source) during the build in some circumstances, and it is set in SSH Git deploys to Heroku
 unset GIT_DIR
@@ -482,6 +483,7 @@ elif composer show -d "$build_dir/.heroku/php" --installed --quiet heroku-sys/hh
 fi
 
 install_oci8_ext
+install_ioncube_ext
 
 # log number of installed platform packages
 mmeasure "platform.count" $(composer show -d "$build_dir/.heroku/php" --installed "heroku-sys/*" 2> /dev/null | wc -l)
