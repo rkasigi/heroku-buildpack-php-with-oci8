@@ -8,9 +8,7 @@ install_ioncube_ext() {
     	mcount "failures.bootstrap.download.ioncube"
     	error <<-EOF
     		Failed to download ioncube extension!
-
-
-    	EOF
+EOF
     }
 
     tar xzf $build_dir/.heroku/php/ioncube.tar.gz -C $build_dir/.heroku/php
