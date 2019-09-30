@@ -1,5 +1,134 @@
 # heroku-buildpack-php CHANGELOG
 
+## v162 (2019-09-27)
+
+### ADD
+
+- PHP/7.2.23 [David Zuelke]
+- PHP/7.3.10 [David Zuelke]
+- ext-newrelic/9.1.0.246 [David Zuelke]
+- ext-mongodb/1.6.0 (PHP 5.6+ only) [David Zuelke]
+- ext-blackfire/1.27.1 [David Zuelke]
+- Nginx/1.16.1 [David Zuelke]
+
+### CHG
+
+- librdkafka/1.2.0 [David Zuelke]
+
+## v161 (2019-08-30)
+
+### ADD
+
+- PHP/7.1.32 [David Zuelke]
+- PHP/7.2.22 [David Zuelke]
+- PHP/7.3.9 [David Zuelke]
+
+### CHG
+
+- Build PHP with libwebp for ext-gd on heroku-18 (#358) [David Zuelke]
+
+## v160 (2019-08-23)
+
+### ADD
+
+- ext-newrelic/9.0.2.245 [David Zuelke]
+- ext-blackfire/1.27.0 [David Zuelke]
+- Apache/2.4.41 [David Zuelke]
+
+### CHG
+
+- Simplify ext-newrelic startup handling [David Zuelke]
+- Simplify ext-blackfire startup handling [David Zuelke]
+- ext-blackfire now supports `BLACKFIRE_LOG_LEVEL` (4: debug, 3: info, 2: warning, 1: error) [David Zuelke]
+
+### FIX
+
+- Fix HHVM boot scripts failing if a `composer` shell function is present [David Zuelke]
+
+## v159 (2019-08-06)
+
+### ADD
+
+- Automatically run 'composer test' if present, or one of 'codecept'/'behat'/'phpspec'/'atoum'/'kahlan'/'peridot'/'phpunit', on Heroku CI [David Zuelke]
+- PHP/7.1.31 [David Zuelke]
+- PHP/7.2.21 [David Zuelke]
+- PHP/7.3.8 [David Zuelke]
+- ext-rdkafka/3.1.2 [David Zuelke]
+- ext-redis/5.0.2 [David Zuelke]
+- ext-blackfire/1.26.4 [David Zuelke]
+
+### CHG
+
+- Enable zend.assertions on Heroku CI [David Zuelke]
+- Boot scripts now prefer a `composer` binary on `$PATH` over a `composer.phar` in the CWD [David Zuelke]
+- Refactor logic used to prevent APM extensions such as `ext-newrelic` or `ext-blackfire` from starting up during during boot preparations or builds [David Zuelke]
+- Patch `libc-client`, used by PHP's `ext-imap`, to use SNI if possible (required with TLSv1.3) [David Zuelke]
+- Composer/1.9.0 [David Zuelke]
+
+### FIX
+
+- Boot scripts no longer use `php -n` to prevent APM extensions from booting, but instead add an INI file that contains disabling directives for common extensions (#345, #348, #349) [David Zuelke]
+
+## v158 (2019-07-04)
+
+### ADD
+
+- PHP/7.2.20 [David Zuelke]
+- PHP/7.3.7 [David Zuelke]
+- ext-blackfire/1.26.2 [David Zuelke]
+- ext-event/2.5.3 [David Zuelke]
+- ext-phalcon/3.4.4 [David Zuelke]
+- ext-rdkafka/3.1.1 [David Zuelke]
+- ext-redis/5.0.0 [David Zuelke]
+
+### CHG
+
+- libcassandra/2.13.0 [David Zuelke]
+- librdkafka/1.1.0 [David Zuelke]
+
+## v157 (2019-06-13)
+
+### ADD
+
+- ext-event/2.5.2 [David Zuelke]
+- ext-mongodb/1.5.5 [David Zuelke]
+- ext-newrelic/8.7.0.242 [David Zuelke]
+- ext-blackfire/1.25.0 [David Zuelke]
+
+### CHG
+
+- Composer/1.8.6 [David Zuelke]
+
+### FIX
+
+- Bug in Apache 2.4.39 (https://bz.apache.org/bugzilla/show_bug.cgi?id=63325) causes 408 timeout after 20 seconds on long file uploads (#342) [David Zuelke]
+- Phalcon 3.4.3 segfaults on latest PHP 7.3.6 [David Zuelke]
+
+## v156 (2019-05-30)
+
+### ADD
+
+- PHP/7.1.30 [David Zuelke]
+- PHP/7.2.19 [David Zuelke]
+- PHP/7.3.6 [David Zuelke]
+- ext-ev/1.0.6 [David Zuelke]
+- ext-event/2.5.1 [David Zuelke]
+
+### CHG
+
+- librdkafka/1.0.1 [David Zuelke]
+- Use bundled `php.ini-production` as the standard PHP config and apply Heroku settings via `conf.d/` include [David Zuelke]
+- Update `error_reporting` to `E_ALL & ~E_STRICT` for all runtime versions [David Zuelke]
+
+### FIX
+
+- `mail.add_x_header` INI directive is set to an outdated default value for some PHP versions [David Zuelke]
+- `serialize_precision` INI directive is set to an outdated default value for some PHP versions [David Zuelke]
+- `session.entropy_length` INI directive is set to an outdated default value for some PHP versions [David Zuelke]
+- `session.sid_bits_per_character` INI directive is set to a non-recommended default value for some PHP versions [David Zuelke]
+- `url_rewriter.tags` INI directive is set to an outdated default value for some PHP versions [David Zuelke]
+- PHP assertions should be disabled in prod mode (#242) [David Zuelke]
+
 ## v155 (2019-05-09)
 
 ### ADD

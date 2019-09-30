@@ -7,8 +7,50 @@ require 'date'
 require 'json'
 require 'sem_version'
 require 'shellwords'
+require 'excon'
 
 ENV['RACK_ENV'] = 'test'
+
+module Hatchet
+	class App
+		attr_reader :name, :stack, :directory, :repo_name, :app_config
+	end
+	
+	class TestRun
+		# override the default handling to also include stack and env vars in app.json
+		def source_blob_url
+			@app.in_directory do
+				app_json = JSON.parse(File.read("app.json")) if File.exist?("app.json")
+				app_json ||= {}
+				app_json["environments"]                       ||= {}
+				app_json["environments"]["test"]               ||= {}
+				app_json["environments"]["test"]["buildpacks"] = @buildpacks.map {|b| { url: b } }
+				app_json["environments"]["test"]["env"]        ||= {}
+				
+				# begin override: set stack into app.json
+				app_json["stack"]                              ||= @app.stack if @app.stack && !@app.stack.empty?
+				# end override
+				
+				# begin override: copy in env too, so we get e.g. the correct HEROKU_PHP_PLATFORM_REPOSITORIES
+				app_json["environments"]["test"]["env"]        = @app.app_config.merge(app_json["environments"]["test"]["env"]) # so we get HEROKU_PHP_PLATFORM_REPOSITORIES in there
+				# end override
+				
+				File.open("app.json", "w") {|f| f.write(JSON.generate(app_json)) }
+				
+				`tar c . | gzip -9 > slug.tgz`
+				
+				source_put_url = @app.create_source
+				Hatchet::RETRIES.times.retry do
+					@api_rate_limit.call
+					Excon.put(source_put_url,
+						expects: [200],
+						body:    File.read('slug.tgz'))
+				end
+			end
+			return @app.source_get_url
+		end
+	end
+end
 
 def product_hash(hash)
 	hash.values[0].product(*hash.values[1..-1]).map{ |e| Hash[hash.keys.zip e] }
@@ -18,13 +60,17 @@ RSpec.configure do |config|
 	config.filter_run focused: true unless ENV['IS_RUNNING_ON_TRAVIS']
 	config.run_all_when_everything_filtered = true
 	config.alias_example_to :fit, focused: true
-	config.full_backtrace      = true
+	config.filter_run_excluding :requires_php_on_stack => lambda { |series| !php_on_stack?(series) }
+	config.filter_run_excluding :stack => lambda { |stack| ENV['STACK'] != stack }
+	
 	config.verbose_retry       = true # show retry status in spec process
-	config.default_retry_count = 2 if ENV['IS_RUNNING_ON_TRAVIS'] # retry all tests that fail again
+	config.default_retry_count = 2 if ENV['IS_RUNNING_ON_TRAVIS'] # retry all tests that fail again...
+	config.exceptions_to_retry = [Excon::Errors::Timeout] #... if they're caused by these exception types
+	config.fail_fast = 1 if ENV['IS_RUNNING_ON_TRAVIS']
+	
 	config.expect_with :rspec do |c|
 		c.syntax = :expect
 	end
-	config.filter_run_excluding :requires_php_on_stack => lambda { |series| !php_on_stack?(series) }
 end
 
 def successful_body(app, options = {})
